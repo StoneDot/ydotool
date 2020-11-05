@@ -75,11 +75,21 @@ if (NOT DEFINED STATIC_BUILD OR (${STATIC_BUILD}))
     target_link_libraries(ydotool_library_static dl boost_program_options uInputPlus evdevPlus)
 
     add_executable(ydotoold_static ${SOURCE_FILES_DAEMON})
-    target_link_libraries(ydotoold_static ydotool_library_static dl pthread boost_program_options uInputPlus evdevPlus -static)
+    target_link_libraries(ydotoold_static ydotool_library_static
+            -static
+            dl boost_program_options uInputPlus evdevPlus
+            -Wl,--whole-archive
+            pthread
+            -Wl,--no-whole-archive)
     set_target_properties(ydotoold_static PROPERTIES OUTPUT_NAME ydotoold_static)
 
     add_executable(ydotool_static ${SOURCE_FILES_CLIENT})
-    target_link_libraries(ydotool_static ydotool_library_static boost_program_options pthread uInputPlus evdevPlus -static)
+    target_link_libraries(ydotool_static ydotool_library_static
+            -static
+            boost_program_options uInputPlus evdevPlus
+            -Wl,--whole-archive
+            pthread
+            -Wl,--no-whole-archive)
     set_target_properties(ydotool_static PROPERTIES OUTPUT_NAME ydotool_static)
     
     install(TARGETS ydotool_library_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
